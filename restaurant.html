@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Grand Table | Restaurant Billing</title>
+  <style>
+    :root {
+      --ink: #24312b;
+      --muted: #68736d;
+      --green: #286548;
+      --green-dark: #1d4934;
+      --cream: #f5f3ed;
+      --paper: #ffffff;
+      --line: #e2e5df;
+      --red: #a94335;
+      --gold: #c59a4a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      color: var(--ink);
+      background: var(--cream);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button, input { font: inherit; }
+
+    .app {
+      max-width: 1240px;
+      margin: 0 auto;
+      overflow: hidden;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 12px 35px rgba(32, 47, 38, .08);
+    }
+
+    .site-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 24px 30px;
+      color: white;
+      background: var(--green-dark);
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      flex: 0 0 58px;
+      width: 58px;
+      height: 58px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      color: #f2d69b;
+      font-size: 28px;
+    }
+
+    .brand-copy h1 {
+      margin: 0 0 5px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      letter-spacing: .04em;
+    }
+
+    .brand-copy p {
+      margin: 0;
+      color: #d9e4dc;
+      font-size: .88rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.65fr) minmax(310px, 1fr);
+    }
+
+    .menu-area { padding: 28px; background: #fbfbf8; }
+    .bill-area { padding: 28px; color: white; background: #26372e; }
+
+    .section-heading {
+      margin: 0 0 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--gold);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.55rem;
+      font-weight: 600;
+    }
+
+    .section-note {
+      margin: -10px 0 22px;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .menu-category {
+      margin-bottom: 22px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: white;
+    }
+
+    .category-title {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+      font-size: 1.05rem;
+    }
+
+    .food-dot {
+      width: 11px;
+      height: 11px;
+      border: 2px solid currentColor;
+      border-radius: 2px;
+    }
+
+    .veg-title { color: var(--green); }
+    .nonveg-title { color: var(--red); }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 0;
+      border-bottom: 1px solid #edf0eb;
+    }
+
+    .menu-item:last-child { border-bottom: 0; }
+
+    .item-name { margin: 0 0 5px; font-size: .98rem; }
+    .item-price { color: var(--muted); font-size: .9rem; }
+
+    .quantity {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .qty-btn {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #cbd5cc;
+      border-radius: 7px;
+      color: var(--green-dark);
+      background: white;
+      cursor: pointer;
+    }
+
+    .qty-btn:hover { background: #edf4ee; }
+    .qty-value { min-width: 16px; text-align: center; font-weight: 700; }
+
+    .field { margin-bottom: 15px; }
+    .field label { display: block; margin-bottom: 7px; color: #e0e7e1; font-size: .88rem; }
+
+    .field input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #6d7e72;
+      border-radius: 7px;
+      outline: none;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    .field input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(197,154,74,.18); }
+
+    .bill-items { margin-top: 24px; }
+    .empty-state { padding: 20px 0; color: #c5d0c8; text-align: center; font-size: .92rem; }
+
+    .bill-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(255,255,255,.14);
+      font-size: .92rem;
+    }
+
+    .bill-row span:last-child { white-space: nowrap; }
+    .totals { margin-top: 18px; padding-top: 8px; border-top: 1px solid #6d7e72; }
+    .grand-total { margin-top: 6px; padding-top: 15px; border-top: 1px solid #6d7e72; font-size: 1.22rem; font-weight: 700; }
+    .muted-light { color: #c5d0c8; }
+
+    .actions { display: grid; gap: 10px; margin-top: 22px; }
+    .action-btn {
+      width: 100%;
+      padding: 13px 15px;
+      border: 0;
+      border-radius: 7px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .generate-btn { color: #fff; background: #367b55; }
+    .generate-btn:hover { background: #418c62; }
+    .print-btn { display: none; color: var(--green-dark); background: #e7d3a5; }
+    .status { min-height: 18px; margin: 12px 0 0; color: #e7d3a5; font-size: .88rem; }
+
+    .footer { padding: 14px 20px; border-top: 1px solid var(--line); color: var(--muted); text-align: center; font-size: .8rem; }
+
+    @media (max-width: 800px) {
+      body { padding: 12px; }
+      .layout { grid-template-columns: 1fr; }
+      .site-header, .menu-area, .bill-area { padding: 22px; }
+    }
+
+    @media (max-width: 420px) {
+      .site-header { align-items: flex-start; }
+      .brand-mark { flex-basis: 46px; width: 46px; height: 46px; font-size: 22px; }
+      .menu-area, .bill-area { padding: 16px; }
+      .menu-category { padding: 13px; }
+      .menu-item { align-items: flex-start; }
+      .quantity { gap: 6px; }
+    }
+
+    @media print {
+      body { padding: 0; background: white; }
+      .app { border: 0; box-shadow: none; }
+      .site-header { padding: 12px 0; color: black; background: white; }
+      .brand-mark { color: black; border-color: #777; }
+      .brand-copy p { color: #444; }
+      .menu-area, .footer, .section-heading, .customer-fields, .actions, .summary-details { display: none !important; }
+      .layout { display: block; }
+      .bill-area { padding: 10px; color: black; background: white; }
+      .field label, .muted-light, .empty-state { color: #333; }
+      .field input { border: 0; padding-left: 0; }
+      .bill-row { border-bottom: 1px solid #ddd; }
+      .totals, .grand-total { border-color: #888; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="site-header">
+      <div class="brand-mark" aria-hidden="true">♨</div>
+      <div class="brand-copy">
+        <h1>The Grand Table</h1>
+        <p>Good food, shared well</p>
+      </div>
+    </header>
+
+    <div class="layout">
+      <section class="menu-area" aria-labelledby="menu-title">
+        <h2 class="section-heading" id="menu-title">Our Menu</h2>
+        <p class="section-note">Choose your dishes and set the quantity.</p>
+        <div id="menuCategories"></div>
+      </section>
+
+      <aside class="bill-area" aria-labelledby="bill-title">
+        <h2 class="section-heading" id="bill-title">Order &amp; Bill</h2>
+
+        <div class="customer-fields">
+          <div class="field">
+            <label for="customerName">Customer name</label>
+            <input id="customerName" type="text" placeholder="Enter customer name">
+          </div>
+          <div class="field">
+            <label for="tableNo">Table / order number</label>
+            <input id="tableNo" type="text" placeholder="e.g. T01 or ORD-123">
+          </div>
+        </div>
+
+        <div class="bill-items" id="billItemsList" aria-live="polite"></div>
+
+        <div class="totals">
+          <div class="bill-row summary-details">
+            <span class="muted-light">Different items</span>
+            <span id="itemCount">0</span>
+          </div>
+          <div class="bill-row summary-details">
+            <span class="muted-light">Total quantity</span>
+            <span id="totalQuantity">0</span>
+          </div>
+          <div class="bill-row">
+            <span>Subtotal</span>
+            <span id="subtotalAmount">₹0</span>
+          </div>
+          <div class="bill-row">
+            <span>GST (5%)</span>
+            <span id="gstAmount">₹0</span>
+          </div>
+          <div class="bill-row grand-total">
+            <span>Total</span>
+            <span id="grandTotal">₹0</span>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="action-btn generate-btn" id="generateBill">Generate bill</button>
+          <button class="action-btn print-btn" id="printBill">Print receipt</button>
+        </div>
+        <p class="status" id="statusMessage" role="status"></p>
+      </aside>
+    </div>
+    <footer class="footer">The Grand Table · Restaurant billing demo</footer>
+  </main>
+
+  <script>
+    const MENU_DATA = {
+      vegetarian: [
+        { name: "Paneer Tikka Masala", price: 280 },
+        { name: "Dal Makhani", price: 220 },
+        { name: "Veg Biryani", price: 260 },
+        { name: "Aloo Gobi", price: 180 },
+        { name: "Palak Paneer", price: 250 },
+        { name: "Veg Manchurian", price: 210 },
+        { name: "Mushroom Masala", price: 240 }
+      ],
+      nonvegetarian: [
+        { name: "Chicken Tikka Masala", price: 350 },
+        { name: "Butter Chicken", price: 320 },
+        { name: "Chicken Biryani", price: 300 },
+        { name: "Mutton Rogan Josh", price: 420 },
+        { name: "Fish Curry", price: 380 },
+        { name: "Chicken 65", price: 290 },
+        { name: "Prawn Masala", price: 450 }
+      ]
+    };
+
+    // Store each selected dish's quantity by its unique menu key.
+    const order = {};
+
+    const money = amount => `₹${amount.toLocaleString("en-IN")}`;
+
+    function renderMenu() {
+      const container = document.getElementById("menuCategories");
+      const sections = [
+        { key: "vegetarian", title: "Vegetarian", className: "veg-title", symbol: "🟩" },
+        { key: "nonvegetarian", title: "Non-vegetarian", className: "nonveg-title", symbol: "🟥" }
+      ];
+
+      container.innerHTML = sections.map(section => {
+        const items = MENU_DATA[section.key].map((item, index) => {
+          const key = `${section.key}-${index}`;
+          return `
+            <div class="menu-item">
+              <div>
+                <h3 class="item-name">${item.name}</h3>
+                <div class="item-price">${money(item.price)}</div>
+              </div>
+              <div class="quantity" aria-label="Quantity for ${item.name}">
+                <button class="qty-btn" type="button" data-key="${key}" data-change="-1" aria-label="Remove one ${item.name}">−</button>
+                <span class="qty-value" id="qty-${key}">0</span>
+                <button class="qty-btn" type="button" data-key="${key}" data-change="1" aria-label="Add one ${item.name}">+</button>
+              </div>
+            </div>`;
+        }).join("");
+
+        return `
+          <section class="menu-category">
+            <h3 class="category-title ${section.className}">
+              <span class="food-dot" aria-hidden="true"></span>
+              ${section.title} <span class="muted-light">(${MENU_DATA[section.key].length})</span>
+            </h3>
+            ${items}
+          </section>`;
+      }).join("");
+    }
+
+    function getSelectedItems() {
+      return Object.entries(order)
+        .filter(([, quantity]) => quantity > 0)
+        .map(([key, quantity]) => {
+          const [category, index] = key.split("-");
+          const dish = MENU_DATA[category][Number(index)];
+          return { ...dish, quantity, total: dish.price * quantity };
+        });
+    }
+
+    function updateQuantity(key, change) {
+      order[key] = Math.max(0, (order[key] || 0) + change);
+      document.getElementById(`qty-${key}`).textContent = order[key];
+      document.getElementById("statusMessage").textContent = "";
+      document.querySelector(".print-btn").style.display = "none";
+      updateBill();
+    }
+
+    function updateBill() {
+      const items = getSelectedItems();
+      const subtotal = items.reduce((sum, item) => sum + item.total, 0);
+      const quantityTotal = items.reduce((sum, item) => sum + item.quantity, 0);
+      const gst = Math.round(subtotal * 0.05);
+
+      document.getElementById("billItemsList").innerHTML = items.length
+        ? items.map(item => `
+            <div class="bill-row">
+              <span>${item.name} × ${item.quantity}</span>
+              <span>${money(item.total)}</span>
+            </div>`).join("")
+        : '<p class="empty-state">Your order is empty. Add a dish to begin.</p>';
+
+      document.getElementById("itemCount").textContent = items.length;
+      document.getElementById("totalQuantity").textContent = quantityTotal;
+      document.getElementById("subtotalAmount").textContent = money(subtotal);
+      document.getElementById("gstAmount").textContent = money(gst);
+      document.getElementById("grandTotal").textContent = money(subtotal + gst);
+    }
+
+    function generateBill() {
+      if (getSelectedItems().length === 0) {
+        document.getElementById("statusMessage").textContent = "Please add at least one dish first.";
+        return;
+      }
+
+      document.getElementById("statusMessage").textContent = "Bill is ready to print.";
+      document.getElementById("printBill").style.display = "block";
+    }
+
+    function printReceipt() {
+      const customerName = document.getElementById("customerName").value.trim() || "Walk-in customer";
+      const tableNo = document.getElementById("tableNo").value.trim() || "N/A";
+      const items = getSelectedItems();
+      if (!items.length) {
+        document.getElementById("statusMessage").textContent = "Please add at least one dish first.";
+        return;
+      }
+
+      const receiptRows = items.map(item =>
+        `<tr><td>${item.name} × ${item.quantity}</td><td>${money(item.total)}</td></tr>`
+      ).join("");
+      const subtotal = items.reduce((sum, item) => sum + item.total, 0);
+      const gst = Math.round(subtotal * 0.05);
+
+      const receipt = `<!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <title>The Grand Table - Receipt</title>
+          <style>
+            body{max-width:420px;margin:24px auto;padding:16px;font:14px Arial,sans-serif;color:#222}
+            h1{text-align:center;font-family:Georgia,serif;margin-bottom:4px}
+            .center{text-align:center;color:#555}
+            table{width:100%;border-collapse:collapse;margin:22px 0}
+            td{padding:9px 0;border-bottom:1px solid #ddd}
+            td:last-child{text-align:right;white-space:nowrap}
+            .total{font-weight:bold;font-size:17px;border-top:2px solid #333;padding-top:12px}
+          </style>
+        </head>
+        <body>
+          <h1>The Grand Table</h1>
+          <p class="center">Good food, shared well</p>
+          <hr>
+          <p>Customer: ${escapeHTML(customerName)}</p>
+          <p>Table / Order: ${escapeHTML(tableNo)}</p>
+          <p>Date: ${new Date().toLocaleString("en-IN")}</p>
+          <table>${receiptRows}</table>
+          <p>Subtotal: <strong>${money(subtotal)}</strong></p>
+          <p>GST (5%): <strong>${money(gst)}</strong></p>
+          <p class="total">Grand total: ${money(subtotal + gst)}</p>
+          <p class="center">Thank you for dining with us.</p>
+          <script>window.onload = () => window.print();<\/script>
+        </body>
+        </html>`;
+
+      const printWindow = window.open("", "_blank");
+      if (!printWindow) {
+        document.getElementById("statusMessage").textContent = "Allow pop-ups to print the receipt.";
+        return;
+      }
+      printWindow.document.open();
+      printWindow.document.write(receipt);
+      printWindow.document.close();
+    }
+
+    function escapeHTML(value) {
+      return value.replace(/[&<>"']/g, character => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[character]);
+    }
+
+    document.getElementById("menuCategories").addEventListener("click", event => {
+      const button = event.target.closest("button[data-key]");
+      if (button) updateQuantity(button.dataset.key, Number(button.dataset.change));
+    });
+
+    document.getElementById("generateBill").addEventListener("click", generateBill);
+    document.getElementById("printBill").addEventListener("click", printReceipt);
+
+    renderMenu();
+    updateBill();
+  </script>
+</body>
+</html>

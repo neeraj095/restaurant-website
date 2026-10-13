@@ -1,0 +1,236 @@
+
+  
+    :root {
+      --ink: #24312b;
+      --muted: #68736d;
+      --green: #286548;
+      --green-dark: #1d4934;
+      --cream: #f5f3ed;
+      --paper: #ffffff;
+      --line: #e2e5df;
+      --red: #a94335;
+      --gold: #c59a4a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      color: var(--ink);
+      background: var(--cream);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button, input { font: inherit; }
+
+    .app {
+      max-width: 1240px;
+      margin: 0 auto;
+      overflow: hidden;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 12px 35px rgba(32, 47, 38, .08);
+    }
+
+    .site-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 24px 30px;
+      color: white;
+      background: var(--green-dark);
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      flex: 0 0 58px;
+      width: 58px;
+      height: 58px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      color: #f2d69b;
+      font-size: 28px;
+    }
+
+    .brand-copy h1 {
+      margin: 0 0 5px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      letter-spacing: .04em;
+    }
+
+    .brand-copy p {
+      margin: 0;
+      color: #d9e4dc;
+      font-size: .88rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.65fr) minmax(310px, 1fr);
+    }
+
+    .menu-area { padding: 28px; background: #fbfbf8; }
+    .bill-area { padding: 28px; color: white; background: #26372e; }
+
+    .section-heading {
+      margin: 0 0 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--gold);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.55rem;
+      font-weight: 600;
+    }
+
+    .section-note {
+      margin: -10px 0 22px;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .menu-category {
+      margin-bottom: 22px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: white;
+    }
+
+    .category-title {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+      font-size: 1.05rem;
+    }
+
+    .food-dot {
+      width: 11px;
+      height: 11px;
+      border: 2px solid currentColor;
+      border-radius: 2px;
+    }
+
+    .veg-title { color: var(--green); }
+    .nonveg-title { color: var(--red); }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 0;
+      border-bottom: 1px solid #edf0eb;
+    }
+
+    .menu-item:last-child { border-bottom: 0; }
+
+    .item-name { margin: 0 0 5px; font-size: .98rem; }
+    .item-price { color: var(--muted); font-size: .9rem; }
+
+    .quantity {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .qty-btn {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #cbd5cc;
+      border-radius: 7px;
+      color: var(--green-dark);
+      background: white;
+      cursor: pointer;
+    }
+
+    .qty-btn:hover { background: #edf4ee; }
+    .qty-value { min-width: 16px; text-align: center; font-weight: 700; }
+
+    .field { margin-bottom: 15px; }
+    .field label { display: block; margin-bottom: 7px; color: #e0e7e1; font-size: .88rem; }
+
+    .field input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #6d7e72;
+      border-radius: 7px;
+      outline: none;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    .field input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(197,154,74,.18); }
+
+    .bill-items { margin-top: 24px; }
+    .empty-state { padding: 20px 0; color: #c5d0c8; text-align: center; font-size: .92rem; }
+
+    .bill-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(255,255,255,.14);
+      font-size: .92rem;
+    }
+
+    .bill-row span:last-child { white-space: nowrap; }
+    .totals { margin-top: 18px; padding-top: 8px; border-top: 1px solid #6d7e72; }
+    .grand-total { margin-top: 6px; padding-top: 15px; border-top: 1px solid #6d7e72; font-size: 1.22rem; font-weight: 700; }
+    .muted-light { color: #c5d0c8; }
+
+    .actions { display: grid; gap: 10px; margin-top: 22px; }
+    .action-btn {
+      width: 100%;
+      padding: 13px 15px;
+      border: 0;
+      border-radius: 7px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .generate-btn { color: #fff; background: #367b55; }
+    .generate-btn:hover { background: #418c62; }
+    .print-btn { display: none; color: var(--green-dark); background: #e7d3a5; }
+    .status { min-height: 18px; margin: 12px 0 0; color: #e7d3a5; font-size: .88rem; }
+
+    .footer { padding: 14px 20px; border-top: 1px solid var(--line); color: var(--muted); text-align: center; font-size: .8rem; }
+
+    @media (max-width: 800px) {
+      body { padding: 12px; }
+      .layout { grid-template-columns: 1fr; }
+      .site-header, .menu-area, .bill-area { padding: 22px; }
+    }
+
+    @media (max-width: 420px) {
+      .site-header { align-items: flex-start; }
+      .brand-mark { flex-basis: 46px; width: 46px; height: 46px; font-size: 22px; }
+      .menu-area, .bill-area { padding: 16px; }
+      .menu-category { padding: 13px; }
+      .menu-item { align-items: flex-start; }
+      .quantity { gap: 6px; }
+    }
+
+    @media print {
+      body { padding: 0; background: white; }
+      .app { border: 0; box-shadow: none; }
+      .site-header { padding: 12px 0; color: black; background: white; }
+      .brand-mark { color: black; border-color: #777; }
+      .brand-copy p { color: #444; }
+      .menu-area, .footer, .section-heading, .customer-fields, .actions, .summary-details { display: none !important; }
+      .layout { display: block; }
+      .bill-area { padding: 10px; color: black; background: white; }
+      .field label, .muted-light, .empty-state { color: #333; }
+      .field input { border: 0; padding-left: 0; }
+      .bill-row { border-bottom: 1px solid #ddd; }
+      .totals, .grand-total { border-color: #888; }
+    }
+  
